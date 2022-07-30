@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/navigation_panic"
+        android:icon="@drawable/ic_baseline_warning_24"
+        android:title="Panic"/>
+    <item android:id="@+id/navigation_contacts"
+        android:icon="@drawable/ic_baseline_contacts_24"
+        android:title="Contacts"/>
+
+</menu>
