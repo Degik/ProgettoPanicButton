@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -31,11 +32,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch(item.getItemId()){
             case R.id.navigation_panic:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, panicFragment);
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, panicFragment).commit();
                 return true;
 
             case R.id.navigation_contacts:
-                getSupportFragmentManager().beginTransaction().replace(R.id.container, contactsFragment);
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, contactsFragment).commit();
                 return true;
         }
         return false;
