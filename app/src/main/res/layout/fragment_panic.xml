@@ -8,13 +8,9 @@
     <!-- TODO: Update blank fragment layout -->
     <Button
         android:id="@+id/panicButton"
-        tools:icon = "@drawable/ic_baseline_warning_24"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:text="@string/emergenza"
-        />
-
-
-
+        tools:icon="@android:drawable/stat_sys_warning" />
 </FrameLayout>
