@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Location location;
     private double latitude;
     private double longitude;
+    // ServiceIntentTracker
+    private Intent intentServiceTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 // Richiedo i permessi
                 requestLocationPermission();
             }
+        } else {
+            if()
         }
     }
 
@@ -121,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     // Avvio il service per la geolocalizzazione
     private void startServiceTracker(){
-        Intent intentServiceTracker = new Intent(this, ServiceTracker.class);
+        intentServiceTracker = new Intent(this, ServiceTracker.class);
         startService(intentServiceTracker);
     }
 }

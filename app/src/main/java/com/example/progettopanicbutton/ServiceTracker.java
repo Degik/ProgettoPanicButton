@@ -55,6 +55,12 @@ public class ServiceTracker extends Service {
     }
 
     @Override
+    public void onDestroy(){
+        locationManager.removeUpdates(listener);
+        System.out.println("ServizioTracker fermato!");
+    }
+
+    @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
