@@ -11,18 +11,22 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @SuppressLint("MissingPermission")
 public class ServiceTracker extends Service {
     // Parametri
     private long minTimeUpdate = 3000;
-    private float minDistanceUpdate = 10;
+    private long minDistanceUpdate = 10;
     // LocationMenager e Listener
     private LocationManager locationManager;
     private LocationListener listener;
     // Location
-    private static Location location;
+    private static Location myLocation;
 
 
     public ServiceTracker() {
@@ -36,12 +40,18 @@ public class ServiceTracker extends Service {
         }
         if (locationManager != null) {
             try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, (long) minDistanceUpdate, minTimeUpdate, listener);
+                listener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(@NonNull Location location) {
+                        myLocation = location;
+                    }
+                };
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minDistanceUpdate, minTimeUpdate, listener);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        System.out.println("ServiceTracker avviato con successo!");
     }
 
     @Override
@@ -50,7 +60,7 @@ public class ServiceTracker extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public static Location getLocation(){
-        return location;
+    public Location getMyLocation(){
+        return myLocation;
     }
 }
