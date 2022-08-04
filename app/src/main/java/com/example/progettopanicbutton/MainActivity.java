@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         */
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         gpsTrack = sharedPreferences.getBoolean("gpsTrack", false);
+
+        // Se il gps è impostato faccio partire il service
         if(gpsTrack){
             // Controllo i permessi
             if(checkLocationPermission()){
