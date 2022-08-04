@@ -2,11 +2,15 @@ package com.example.progettopanicbutton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,9 +21,14 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
-
+    // Permission
+    private int PERMISSION_ID = 44;
+    // BottomoNavigationView
     private BottomNavigationView bottomNavigationView;
-    //
+    // Settings
+    private boolean gpsTrack;
+    private boolean voiceRecord;
+    private boolean cameraPhoto;
     //Fragment
     private Contacts contactsFragment = new Contacts();
     private Panic panicFragment = new Panic();
@@ -31,16 +40,27 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 
+        // Imposto la schermata iniziale sul fragment del panico
         bottomNavigationView.setSelectedItemId(R.id.navigation_panic);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, panicFragment).commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
 
         /*
-            Raccolgo un valore dalle sharedPref per prova
+            Raccolgo le impostazioni
         */
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String signature = sharedPreferences.getString("signature", "");
-        System.out.println(signature);
+        gpsTrack = sharedPreferences.getBoolean("gpsTrack", false);
+        if(gpsTrack){
+            // Controllo i permessi
+            if(checkLocationPermission()){
+                // startServiceTracker
+                startServiceTracker();
+            } else {
+                // Richiedo i permessi
+                requestLocationPermission();
+            }
+        }
     }
 
     @Override
@@ -75,8 +95,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
+    private boolean checkLocationPermission(){
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationPermission(){
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
+
+    // Apro l'activity per il settings
     private void newSettings(){
         Intent intentSettings = new Intent(this, SettingsActivity.class);
         startActivity(intentSettings);
+    }
+
+    // Avvio il service per la geolocalizzazione
+    private void startServiceTracker(){
+        Intent intentServiceTracker = new Intent(this, ServiceTracker.class);
+        startService(intentServiceTracker);
     }
 }

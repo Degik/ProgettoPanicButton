@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.progettopanicbutton">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
@@ -15,11 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProgettoPanicButton"
         tools:targetApi="31">
+        <service
+            android:name=".ServiceTracker"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
