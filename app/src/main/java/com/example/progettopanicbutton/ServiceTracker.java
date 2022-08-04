@@ -15,10 +15,14 @@ import androidx.core.app.ActivityCompat;
 
 @SuppressLint("MissingPermission")
 public class ServiceTracker extends Service {
+    // Parametri
     private long minTimeUpdate = 3000;
     private float minDistanceUpdate = 10;
+    // LocationMenager e Listener
     private LocationManager locationManager;
     private LocationListener listener;
+    // Location
+    private static Location location;
 
 
     public ServiceTracker() {
@@ -37,6 +41,7 @@ public class ServiceTracker extends Service {
                 e.printStackTrace();
             }
         }
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
     @Override
@@ -45,7 +50,7 @@ public class ServiceTracker extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public Location getLocation(){
-        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    public static Location getLocation(){
+        return location;
     }
 }

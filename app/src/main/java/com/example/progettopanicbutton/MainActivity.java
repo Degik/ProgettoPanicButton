@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             if(checkLocationPermission()){
                 // startServiceTracker
                 startServiceTracker();
-                location =
+
             } else {
                 // Richiedo i permessi
                 requestLocationPermission();
