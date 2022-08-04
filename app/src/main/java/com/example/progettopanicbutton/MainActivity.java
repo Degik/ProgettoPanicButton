@@ -71,7 +71,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 requestLocationPermission();
             }
         } else {
-            if()
+            //  TODO: Lavorare al termine del servizio di tracker
+            if(ServiceTracker.statusServiceTracker){
+                stopService(intentServiceTracker);
+            }
         }
     }
 

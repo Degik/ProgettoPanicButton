@@ -19,13 +19,15 @@ import java.util.List;
 
 @SuppressLint("MissingPermission")
 public class ServiceTracker extends Service {
+    // Status service (static)
+    public static boolean statusServiceTracker = false;
     // Parametri
     private long minTimeUpdate = 3000;
     private long minDistanceUpdate = 10;
     // LocationMenager e Listener
     private LocationManager locationManager;
     private LocationListener listener;
-    // Location
+    // Location (static)
     private static Location myLocation;
 
 
@@ -35,6 +37,7 @@ public class ServiceTracker extends Service {
 
     @Override
     public void onCreate(){
+        statusServiceTracker = true;
         if(locationManager == null){
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         }
@@ -57,6 +60,7 @@ public class ServiceTracker extends Service {
     @Override
     public void onDestroy(){
         locationManager.removeUpdates(listener);
+        statusServiceTracker = false;
         System.out.println("ServizioTracker fermato!");
     }
 
