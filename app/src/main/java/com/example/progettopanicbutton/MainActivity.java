@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     //Fragment
     private Contacts contactsFragment = new Contacts();
     private Panic panicFragment = new Panic();
+    // Location info
+    private Location location;
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             if(checkLocationPermission()){
                 // startServiceTracker
                 startServiceTracker();
+                location =
             } else {
                 // Richiedo i permessi
                 requestLocationPermission();
