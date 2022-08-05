@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Panic">
 
     <!-- TODO: Update blank fragment layout -->
-    <Button
-        android:id="@+id/panicButton"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:text="@string/emergenza"
-        tools:icon="@android:drawable/stat_sys_warning" />
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/panicButton"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:text="@string/emergenza"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:icon="@drawable/ic_baseline_warning_48"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- TODO: cambiare le icon size -->
 </FrameLayout>

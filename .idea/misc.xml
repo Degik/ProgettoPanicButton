@@ -13,8 +13,8 @@
         <entry key="app/src/main/res/drawable/ic_baseline_contacts_24.xml" value="0.1645" />
         <entry key="app/src/main/res/drawable/item_selected.xml" value="0.1645" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.27542905454282407" />
-        <entry key="app/src/main/res/layout/fragment_contacts.xml" value="0.18322194417317708" />
-        <entry key="app/src/main/res/layout/fragment_panic.xml" value="0.28804347826086957" />
+        <entry key="app/src/main/res/layout/fragment_contacts.xml" value="0.26878662109374996" />
+        <entry key="app/src/main/res/layout/fragment_panic.xml" value="0.26742706298828123" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.15520833333333334" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.15520833333333334" />
         <entry key="app/src/main/res/menu/settings_menu.xml" value="0.15416666666666667" />
