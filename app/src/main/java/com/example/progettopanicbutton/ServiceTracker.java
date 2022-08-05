@@ -29,6 +29,8 @@ public class ServiceTracker extends Service {
     private LocationListener listener;
     // Location (static)
     private static Location myLocation;
+    private static double latitude;
+    private static double longitude;
 
 
     public ServiceTracker() {
@@ -66,11 +68,24 @@ public class ServiceTracker extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public Location getMyLocation(){
+    public static Location getMyLocation(){
+        // TODO: Testare il location
         return myLocation;
     }
+
+    // Aggiorno le cordinate
+    // Da usare prima della notifica o anche in altre situazioni
+    public static double getLatitude() {
+        latitude = myLocation.getLatitude();
+        return latitude;
+    }
+
+    public static double getLongitude(){
+        longitude = myLocation.getLongitude();
+        return longitude;
+    }
+
 }
