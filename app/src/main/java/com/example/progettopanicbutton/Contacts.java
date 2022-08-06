@@ -81,13 +81,16 @@ public class Contacts extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        //
+        favouriteId = new ArrayList<>();
         // Controllo se posso accedere ai contatti
         if(checkContactsPermission()){
             //
             floatingActionButtonAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    pickContact();
                 }
             });
         } else {
@@ -113,7 +116,8 @@ public class Contacts extends Fragment {
                     Uri contactData = data.getData();
                     Cursor cursor = getActivity().managedQuery(contactData, null, null, null, null);
                     if(cursor.moveToFirst()){
-
+                        String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                        favouriteId.add(id);
                     }
                 }
                 break;
