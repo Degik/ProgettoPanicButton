@@ -1,6 +1,7 @@
 package com.example.progettopanicbutton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.Preference;
@@ -13,10 +14,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -24,6 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     // Permission
     private int PERMISSION_ID = 44;
+    // RequestCode
     // BottomoNavigationView
     private BottomNavigationView bottomNavigationView;
     // Settings
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private double longitude;
     // ServiceIntentTracker
     private Intent intentServiceTracker;
+    // Button
+    private Button floatingActionButtonAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +117,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
+    @Override
+    public void onActivityResult(int reqCode, int resultCode, Intent data){
+
+    }
+
+    /////////////////////////
+    // METODI PER I PERMESSI
+    /////////////////////////
     private boolean checkLocationPermission(){
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
@@ -120,6 +135,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
     }
 
+    /////////////////////////
+    // METODI PER GLI INTENT
+    /////////////////////////
     // Apro l'activity per il settings
     private void newSettings(){
         Intent intentSettings = new Intent(this, SettingsActivity.class);
