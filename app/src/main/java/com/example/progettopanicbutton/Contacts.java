@@ -10,6 +10,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -20,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,11 +45,11 @@ public class Contacts extends Fragment {
     // Permission
     private final int PERMISSION_ID = 44;
     // Button
-    private Button floatingActionButtonAdd;
+    private FloatingActionButton floatingActionButtonAdd;
     // CursorAdapter
     private SimpleCursorAdapter cursorAdapter;
-    // RequestCode
-    private final int REQUEST_PICK = 1;
+    // RequestCode (public static)
+    public final static int REQUEST_PICK = 1;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -84,8 +91,22 @@ public class Contacts extends Fragment {
 
         //
         favouriteId = new ArrayList<>();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_contacts, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Pulsante per aggiungere contatti
+        floatingActionButtonAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonAdd);
         // Controllo se posso accedere ai contatti
-        if(checkContactsPermission()){
+        if (checkContactsPermission()) {
             //
             floatingActionButtonAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,40 +119,14 @@ public class Contacts extends Fragment {
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        // Pulsante per aggiungere contatti
-        floatingActionButtonAdd = (Button) getActivity().findViewById(R.id.floatingActionButtonAdd);
-        return inflater.inflate(R.layout.fragment_contacts, container, false);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode){
-            case REQUEST_PICK:
-                if(resultCode == Activity.RESULT_OK){
-                    Uri contactData = data.getData();
-                    Cursor cursor = getActivity().managedQuery(contactData, null, null, null, null);
-                    if(cursor.moveToFirst()){
-                        String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
-                        favouriteId.add(id);
-                    }
-                }
-                break;
-        }
-    }
-
     /////////////////////////
     // METODI PER I PERMESSI
     /////////////////////////
-    private boolean checkContactsPermission(){
+    private boolean checkContactsPermission() {
         return ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void requestContactsPermission(){
+    private void requestContactsPermission() {
         ActivityCompat.requestPermissions(getActivity(), new String[]{
                 Manifest.permission.READ_CONTACTS}, PERMISSION_ID);
     }
@@ -140,8 +135,23 @@ public class Contacts extends Fragment {
     // METODI PER GLI INTENT
     /////////////////////////
     // Il metodo chiama l'intent per segliere quale contatto prendere dalla lista di quelli già presenti sul telefono
-    private void pickContact(){
+    private void pickContact() {
         Intent intentPickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(intentPickContact, REQUEST_PICK);
+        try {
+            getActivity().startActivityForResult(intentPickContact, REQUEST_PICK);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void getContactsInformation(){
+        String[] projection = {
+
+        };
+    }
+
+    public void addContact(String contact_ID){
+        favouriteId.add(contact_ID);
     }
 }
