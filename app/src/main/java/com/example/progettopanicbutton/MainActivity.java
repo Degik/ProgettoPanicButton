@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         System.out.println(id);
                         //
                     }
+                    cursor.close();
                 }
                 break;
         }
