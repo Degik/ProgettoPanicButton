@@ -98,6 +98,7 @@ public class Contacts extends Fragment {
         contactArrayList = new ArrayList<>();
         favourite_ID.add("3");
         favourite_ID.add("4");
+        favourite_ID.add("5");
         getContactsInformation();
         //searchPhone();
     }
@@ -154,6 +155,9 @@ public class Contacts extends Fragment {
         }
     }
 
+    ///////////////////////////////////
+    // METODI PER PRELEVARE INFOCONTACT
+    ///////////////////////////////////
     private void getContactsInformation(){
         String[] projection = {
                 ContactsContract.Contacts.NAME_RAW_CONTACT_ID,
@@ -164,7 +168,7 @@ public class Contacts extends Fragment {
         selection_ID = ContactsContract.Contacts._ID + " IN " + selection_ID;
         System.out.println(selection_ID);
         System.out.println(ContactsContract.Contacts._ID);
-        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  selection_ID, null, null);
+        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  "_id = 5", null, null);
         try{
             while(cursor.moveToNext()){
                 // Ricavo il nome
@@ -175,7 +179,10 @@ public class Contacts extends Fragment {
                 String phone = takeNumber(contactID);
                 String email = takeEmail(contactID);
                 // Prendo l'immagine
-                Uri photo = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)));
+                Uri photo = null;
+                if(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)) != null){
+                    photo = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)));
+                }
                 // Creo infoContact
                 InfoContact infoContact = new InfoContact(contactID, name, phone, email, photo);
                 contactArrayList.add(infoContact);
@@ -225,7 +232,9 @@ public class Contacts extends Fragment {
         // Imposto emailCursor
         Cursor emailCursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, projectionEmail, selectionContact_ID,null, null);
         if(emailCursor.moveToFirst()){
-            email = emailCursor.getString(emailCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.DATA));
+            if(ContactsContract.CommonDataKinds.Email.DATA != null){
+                email = emailCursor.getString(emailCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.DATA));
+            }
         }
         emailCursor.close();
         return email;
