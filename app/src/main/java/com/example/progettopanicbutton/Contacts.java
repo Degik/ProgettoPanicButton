@@ -44,6 +44,8 @@ public class Contacts extends Fragment {
     // Struttura dati per salvare gli id dei contatti preferiti
     // TODO: Implementare il backup dei preferiti
     private HashSet<String> favourite_ID;
+    // In questa struttura vengono raccolte le informazioni di ogni contatto per la listView
+    private ArrayList<InfoContact> contactArrayList;
     // Permission
     private final int PERMISSION_ID = 44;
     // Button
@@ -93,6 +95,7 @@ public class Contacts extends Fragment {
 
         //
         favourite_ID = new HashSet<>();
+        contactArrayList = new ArrayList<>();
         favourite_ID.add("3");
         favourite_ID.add("4");
         getContactsInformation();
@@ -171,11 +174,11 @@ public class Contacts extends Fragment {
                 //
                 String phone = takeNumber(contactID);
                 String email = takeEmail(contactID);
-                //
-                System.out.println("Nome: " + name);
-                System.out.println("Numero: " + phone);
-                System.out.println("Email: " + email);
-
+                // Prendo l'immagine
+                Uri photo = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)));
+                // Creo infoContact
+                InfoContact infoContact = new InfoContact(contactID, name, phone, email, photo);
+                contactArrayList.add(infoContact);
             }
         } finally {
             cursor.close();
