@@ -30,7 +30,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,7 +43,7 @@ public class Contacts extends Fragment {
 
     // Struttura dati per salvare gli id dei contatti preferiti
     // TODO: Implementare il backup dei preferiti
-    private ArrayList<String> favouriteId;
+    private HashSet<String> favourite_ID;
     // Permission
     private final int PERMISSION_ID = 44;
     // Button
@@ -90,7 +92,10 @@ public class Contacts extends Fragment {
         }
 
         //
-        favouriteId = new ArrayList<>();
+        favourite_ID = new HashSet<>();
+        favourite_ID.add("1");
+        favourite_ID.add("2");
+        getContactsInformation();
     }
 
     @Override
@@ -147,11 +152,27 @@ public class Contacts extends Fragment {
 
     private void getContactsInformation(){
         String[] projection = {
-
+                ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.HAS_PHONE_NUMBER,
+                ContactsContract.Contacts.PHOTO_URI
         };
+        String selection_ID = favourite_ID.toString().replace("[", "(").replace("]", ")");
+        selection_ID = ContactsContract.Contacts._ID + " IN " + selection_ID;
+        System.out.println(selection_ID);
+        System.out.println(ContactsContract.Contacts._ID);
+        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  ContactsContract.Contacts._ID + " = 1", null, null);
+        try{
+            while(cursor.moveToNext()){
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+                System.out.println(name);
+            }
+        } finally {
+            cursor.close();
+        }
     }
 
     public void addContact(String contact_ID){
-        favouriteId.add(contact_ID);
+        favourite_ID.add(contact_ID);
     }
 }
