@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     Uri contactData = data.getData();
                     Cursor cursor = getContentResolver().query(contactData, null, null, null, null);
                     if (cursor.moveToFirst()) {
-                        String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                        String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.NAME_RAW_CONTACT_ID));
                         //
                         contactsFragment.addContact(id);
                         System.out.println(id);

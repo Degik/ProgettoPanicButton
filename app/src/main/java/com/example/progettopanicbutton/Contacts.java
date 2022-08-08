@@ -153,7 +153,7 @@ public class Contacts extends Fragment {
 
     private void getContactsInformation(){
         String[] projection = {
-                ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.NAME_RAW_CONTACT_ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_URI
         };
@@ -167,28 +167,65 @@ public class Contacts extends Fragment {
                 // Ricavo il nome
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
                 // Ricavo il contatto, per ricavarne il numero in seguito
-                String contactID = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                String contactID = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.NAME_RAW_CONTACT_ID));
                 //
-                String phone = "";
-                // Costruisco la where per _id
-                String selectionContact_ID = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " = \"" + name + "\"";
-                // Costruisco la select per NUMBER
-                String[] projectionPhone = {
-                        ContactsContract.CommonDataKinds.Phone.NUMBER
-                };
-                Cursor phoneCursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projectionPhone, selectionContact_ID,null, null);
-                if(phoneCursor.moveToFirst()){
-                    phone = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                }
-                phoneCursor.close();
+                String phone = takeNumber(contactID);
+                String email = takeEmail(contactID);
                 //
                 System.out.println("Nome: " + name);
                 System.out.println("Numero: " + phone);
+                System.out.println("Email: " + email);
 
             }
         } finally {
             cursor.close();
         }
+    }
+
+    /**
+     * Questo metodo usa il cursor per trovare e prelevare il numero
+     * dell'utente e ritornare {@code phoneNumber}
+     * @param contact_ID Id dell'utente
+     * @return phoneNubmer, altrimenti torna una stringa vuota
+     */
+    private String takeNumber(String contact_ID){
+        String phoneNumber = "";
+        // Costruisco la where per _id
+        String selectionContact_ID = ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = " + contact_ID;
+        // Costruisco la select per NUMBER
+        String[] projectionPhone = {
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+        };
+        // Imposto il phoneCursor
+        Cursor phoneCursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projectionPhone, selectionContact_ID,null, null);
+        if(phoneCursor.moveToFirst()){
+            phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        }
+        phoneCursor.close();
+        return phoneNumber;
+    }
+
+    /**
+     * Questo metodo usa il cursor per trovare e prelevare l'email
+     * dell'utente e ritornare {@code email}
+     * @param contact_ID Id dell'utente
+     * @return email, altrimenti torna una strina vuota
+     */
+    private String takeEmail(String contact_ID){
+        String email = "";
+        // Costruisco la where per _id
+        String selectionContact_ID = ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + contact_ID;
+        // Costruisco la select per EMAIL
+        String[] projectionEmail = {
+                ContactsContract.CommonDataKinds.Email.DATA
+        };
+        // Imposto emailCursor
+        Cursor emailCursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, projectionEmail, selectionContact_ID,null, null);
+        if(emailCursor.moveToFirst()){
+            email = emailCursor.getString(emailCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.DATA));
+        }
+        emailCursor.close();
+        return email;
     }
 
     public void addContact(String contact_ID){
