@@ -161,7 +161,7 @@ public class Contacts extends Fragment {
         selection_ID = ContactsContract.Contacts._ID + " IN " + selection_ID;
         System.out.println(selection_ID);
         System.out.println(ContactsContract.Contacts._ID);
-        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  ContactsContract.Contacts._ID + " = 1", null, null);
+        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  selection_ID, null, null);
         try{
             while(cursor.moveToNext()){
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
