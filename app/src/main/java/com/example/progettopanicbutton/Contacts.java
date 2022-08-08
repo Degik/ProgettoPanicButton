@@ -93,9 +93,10 @@ public class Contacts extends Fragment {
 
         //
         favourite_ID = new HashSet<>();
-        favourite_ID.add("1");
-        favourite_ID.add("2");
+        favourite_ID.add("3");
+        favourite_ID.add("4");
         getContactsInformation();
+        //searchPhone();
     }
 
     @Override
@@ -154,7 +155,6 @@ public class Contacts extends Fragment {
         String[] projection = {
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.HAS_PHONE_NUMBER,
                 ContactsContract.Contacts.PHOTO_URI
         };
         String selection_ID = favourite_ID.toString().replace("[", "(").replace("]", ")");
@@ -164,8 +164,27 @@ public class Contacts extends Fragment {
         Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  selection_ID, null, null);
         try{
             while(cursor.moveToNext()){
+                // Ricavo il nome
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
-                System.out.println(name);
+                // Ricavo il contatto, per ricavarne il numero in seguito
+                String contactID = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+                //
+                String phone = "";
+                // Costruisco la where per _id
+                String selectionContact_ID = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " = \"" + name + "\"";
+                // Costruisco la select per NUMBER
+                String[] projectionPhone = {
+                        ContactsContract.CommonDataKinds.Phone.NUMBER
+                };
+                Cursor phoneCursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projectionPhone, selectionContact_ID,null, null);
+                if(phoneCursor.moveToFirst()){
+                    phone = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                }
+                phoneCursor.close();
+                //
+                System.out.println("Nome: " + name);
+                System.out.println("Numero: " + phone);
+
             }
         } finally {
             cursor.close();
