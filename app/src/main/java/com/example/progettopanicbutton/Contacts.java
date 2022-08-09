@@ -24,9 +24,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +53,10 @@ public class Contacts extends Fragment {
     private final int PERMISSION_ID = 44;
     // Button
     private FloatingActionButton floatingActionButtonAdd;
+    // ContactsAdapter
+    private ContactsAdapter contactsAdapter;
+    // ImageLoader
+    private ImageLoader imageLoader;
     // CursorAdapter
     private SimpleCursorAdapter cursorAdapter;
     // RequestCode (public static)
@@ -100,8 +107,6 @@ public class Contacts extends Fragment {
         favourite_ID.add("4");
         favourite_ID.add("5");
         getContactsInformation();
-
-
         //searchPhone();
     }
 
@@ -129,6 +134,9 @@ public class Contacts extends Fragment {
         } else {
             requestContactsPermission();
         }
+        ListView listView = (ListView) getView().findViewById(R.id.contactsListView);
+        contactsAdapter = new ContactsAdapter(getContext(), R.layout.layout_list_view, contactArrayList);
+        listView.setAdapter(contactsAdapter);
     }
 
     /////////////////////////
@@ -170,7 +178,7 @@ public class Contacts extends Fragment {
         selection_ID = ContactsContract.Contacts._ID + " IN " + selection_ID;
         System.out.println(selection_ID);
         System.out.println(ContactsContract.Contacts._ID);
-        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  "_id = 5", null, null);
+        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  selection_ID, null, null);
         try{
             while(cursor.moveToNext()){
                 // Ricavo il nome

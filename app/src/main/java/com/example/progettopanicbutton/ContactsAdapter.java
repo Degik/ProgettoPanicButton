@@ -1,5 +1,6 @@
 package com.example.progettopanicbutton;
 
+import android.app.Activity;
 import android.content.Context;
 import android.icu.text.IDNA;
 import android.net.Uri;
@@ -12,8 +13,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.w3c.dom.Text;
 
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 public class ContactsAdapter extends ArrayAdapter<InfoContact> {
     private Context context;
     private int resources;
+    private ImageLoader imageLoader;
 
     public ContactsAdapter(Context context, int resources, ArrayList<InfoContact> contactArrayList){
         super(context, resources, contactArrayList);
@@ -50,7 +54,8 @@ public class ContactsAdapter extends ArrayAdapter<InfoContact> {
 
         textViewName.setText(infoContact.getName());
         textViewNumber.setText(infoContact.getNumber());
-        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader = ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         if(photo != null){
             imageLoader.displayImage(String.valueOf(photo), imageView);
         }
