@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -36,6 +38,7 @@ public class ContactsAdapter extends ArrayAdapter<InfoContact> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         TextView textViewName;
         TextView textViewNumber;
+        TextView textViewAvatar;
         ImageView imageView;
 
         String name = getItem(position).getName();
@@ -48,10 +51,12 @@ public class ContactsAdapter extends ArrayAdapter<InfoContact> {
 
         textViewName = (TextView) convertView.findViewById(R.id.nameView);
         textViewNumber = (TextView) convertView.findViewById(R.id.numberView);
+        //textViewAvatar = (TextView) convertView.findViewById(R.id.avatarTextView);
         imageView = (ImageView) convertView.findViewById(R.id.avatarView);
 
         textViewName.setText(infoContact.getName());
         textViewNumber.setText(infoContact.getNumber());
+        //textViewAvatar.setText(infoContact.getName().charAt(0));
         if(photo != null){
             Glide.with(context)
                     .load(photo)
