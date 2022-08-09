@@ -17,6 +17,12 @@ public class InfoContact {
         this.photo = photo;
     }
 
+    public InfoContact(String name, String number, Uri photo){
+        this.name = name;
+        this.number = number;
+        this.photo = photo;
+    }
+
     public String getId() {
         return id;
     }

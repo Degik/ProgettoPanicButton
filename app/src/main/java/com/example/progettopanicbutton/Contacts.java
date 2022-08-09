@@ -100,6 +100,8 @@ public class Contacts extends Fragment {
         favourite_ID.add("4");
         favourite_ID.add("5");
         getContactsInformation();
+
+
         //searchPhone();
     }
 
