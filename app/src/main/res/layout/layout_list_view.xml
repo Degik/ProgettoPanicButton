@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
 
+    <!--
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatarImageView"
         android:layout_width="65dp"
@@ -36,5 +37,87 @@
         android:text="TextView"
         android:textSize="15dp"
         app:layout_constraintStart_toEndOf="@+id/avatarImageView"
-        app:layout_constraintTop_toBottomOf="@+id/nameView" />
+        app:layout_constraintTop_toBottomOf="@+id/nameView" /> -->
+
+
+    <RelativeLayout
+        android:layout_width="412dp"
+        android:layout_height="80dp"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatarView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="Avatar" />
+
+        <LinearLayout
+            android:layout_width="302dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="56dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/nameView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="marquee"
+                    android:fontFamily="sans-serif"
+                    android:singleLine="true"
+                    android:text="Questa linea contiene il nome"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/numberView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:fontFamily="sans-serif"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    tools:text="Questa linea contiene il numero" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/optionsMenuView"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="30dp"
+            android:contentDescription="Options"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="72dp" />
+
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

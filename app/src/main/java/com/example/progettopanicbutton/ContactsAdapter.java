@@ -2,6 +2,7 @@ package com.example.progettopanicbutton;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.icu.text.IDNA;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -13,19 +14,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
+import com.bumptech.glide.Glide;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import org.w3c.dom.Text;
-
+import java.io.File;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ContactsAdapter extends ArrayAdapter<InfoContact> {
     private Context context;
     private int resources;
-    private ImageLoader imageLoader;
 
     public ContactsAdapter(Context context, int resources, ArrayList<InfoContact> contactArrayList){
         super(context, resources, contactArrayList);
@@ -45,21 +43,20 @@ public class ContactsAdapter extends ArrayAdapter<InfoContact> {
         Uri photo = getItem(position).getPhoto();
 
         InfoContact infoContact = new InfoContact(name,number,photo);
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
         convertView = inflater.inflate(resources, parent, false);
 
         textViewName = (TextView) convertView.findViewById(R.id.nameView);
         textViewNumber = (TextView) convertView.findViewById(R.id.numberView);
-        imageView = (ImageView) convertView.findViewById(R.id.avatarImageView);
+        imageView = (ImageView) convertView.findViewById(R.id.avatarView);
 
         textViewName.setText(infoContact.getName());
         textViewNumber.setText(infoContact.getNumber());
-        imageLoader = ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         if(photo != null){
-            imageLoader.displayImage(String.valueOf(photo), imageView);
+            Glide.with(context)
+                    .load(photo)
+                    .into(imageView);
         }
-
         return convertView;
     }
 }

@@ -23,19 +23,13 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,8 +49,6 @@ public class Contacts extends Fragment {
     private FloatingActionButton floatingActionButtonAdd;
     // ContactsAdapter
     private ContactsAdapter contactsAdapter;
-    // ImageLoader
-    private ImageLoader imageLoader;
     // CursorAdapter
     private SimpleCursorAdapter cursorAdapter;
     // RequestCode (public static)
@@ -103,6 +95,8 @@ public class Contacts extends Fragment {
         //
         favourite_ID = new HashSet<>();
         contactArrayList = new ArrayList<>();
+        favourite_ID.add("1");
+        favourite_ID.add("2");
         favourite_ID.add("3");
         favourite_ID.add("4");
         favourite_ID.add("5");
@@ -135,7 +129,7 @@ public class Contacts extends Fragment {
             requestContactsPermission();
         }
         ListView listView = (ListView) getView().findViewById(R.id.contactsListView);
-        contactsAdapter = new ContactsAdapter(getContext(), R.layout.layout_list_view, contactArrayList);
+        contactsAdapter = new ContactsAdapter(getActivity(), R.layout.layout_list_view, contactArrayList);
         listView.setAdapter(contactsAdapter);
     }
 
