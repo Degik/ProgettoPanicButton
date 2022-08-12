@@ -18,6 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -27,6 +30,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,7 +52,7 @@ public class Contacts extends Fragment {
     // Button
     private FloatingActionButton floatingActionButtonAdd;
     // ContactsAdapter
-    private ContactsAdapter contactsAdapter;
+    private ContactsRecyclerAdapter adapter;
     // CursorAdapter
     private SimpleCursorAdapter cursorAdapter;
     // RequestCode (public static)
@@ -128,9 +132,42 @@ public class Contacts extends Fragment {
         } else {
             requestContactsPermission();
         }
-        ListView listView = (ListView) getView().findViewById(R.id.contactsListView);
-        contactsAdapter = new ContactsAdapter(getActivity(), R.layout.layout_list_view, contactArrayList);
-        listView.setAdapter(contactsAdapter);
+        //ListView listView = (ListView) getView().findViewById(R.id.contactsListView);
+        //contactsAdapter = new ContactsAdapter(getActivity(), R.layout.layout_list_view, contactArrayList);
+        //listView.setAdapter(contactsAdapter);
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.contactsListView);
+        adapter = new ContactsRecyclerAdapter(contactArrayList, getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Aggiungo lo swipe
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // Prendo la posizione dell'elemento
+                int position = viewHolder.getAdapterPosition();
+                // Prendo l'elemento
+                InfoContact infoContactDeleted = contactArrayList.get(position);
+                // Cancello l'elemento dalla lista
+                contactArrayList.remove(position);
+                // Aggiorno la lista
+                adapter.notifyItemRemoved(position);
+                Snackbar.make(recyclerView, infoContactDeleted.getName(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Inserisco il vecchio elemento per "Undo"
+                        contactArrayList.add(infoContactDeleted);
+                        // Aggiorno
+                        adapter.notifyItemInserted(position);
+                    }
+                });
+            }
+        });
+
     }
 
     /////////////////////////
