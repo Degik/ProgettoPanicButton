@@ -155,22 +155,22 @@ public class Contacts extends Fragment {
                 // Prendo la posizione dell'elemento
                 int position = viewHolder.getAdapterPosition();
                 // Prendo l'elemento
-                InfoContact infoContactDeleted = contactArrayList.get(position);
+                InfoContact infoContactDeleted = contactArrayList.get(viewHolder.getAdapterPosition());
                 // Cancello l'elemento dalla lista
-                contactArrayList.remove(position);
+                contactArrayList.remove(viewHolder.getAdapterPosition());
                 // Aggiorno la lista
-                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                 Snackbar.make(recyclerView, infoContactDeleted.getName(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         // Inserisco il vecchio elemento per "Undo"
-                        contactArrayList.add(infoContactDeleted);
+                        contactArrayList.add(position, infoContactDeleted);
                         // Aggiorno
                         adapter.notifyItemInserted(position);
                     }
-                });
+                }).show();
             }
-        });
+        }).attachToRecyclerView(recyclerView);
 
     }
 
