@@ -276,7 +276,7 @@ public class Contacts extends Fragment {
                 contactArrayList.remove(viewHolder.getAdapterPosition());
                 // Aggiorno la lista
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                Snackbar.make(recyclerView, infoContactDeleted.getName(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                Snackbar.make(recyclerView, "Contatto eliminato", Snackbar.LENGTH_LONG).setAction("annulla", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         // Inserisco il vecchio elemento per "Undo"
