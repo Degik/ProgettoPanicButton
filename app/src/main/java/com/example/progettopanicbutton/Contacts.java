@@ -134,44 +134,7 @@ public class Contacts extends Fragment {
         } else {
             requestContactsPermission();
         }
-        //ListView listView = (ListView) getView().findViewById(R.id.contactsListView);
-        //contactsAdapter = new ContactsAdapter(getActivity(), R.layout.layout_list_view, contactArrayList);
-        //listView.setAdapter(contactsAdapter);
-        recyclerView = (RecyclerView) getView().findViewById(R.id.contactsListView);
-        adapter = new ContactsRecyclerAdapter(contactArrayList, getContext());
-        recyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        // Aggiungo lo swipe
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                // Prendo la posizione dell'elemento
-                int position = viewHolder.getAdapterPosition();
-                // Prendo l'elemento
-                InfoContact infoContactDeleted = contactArrayList.get(viewHolder.getAdapterPosition());
-                // Cancello l'elemento dalla lista
-                contactArrayList.remove(viewHolder.getAdapterPosition());
-                // Aggiorno la lista
-                adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-                Snackbar.make(recyclerView, infoContactDeleted.getName(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Inserisco il vecchio elemento per "Undo"
-                        contactArrayList.add(position, infoContactDeleted);
-                        // Aggiorno
-                        adapter.notifyItemInserted(position);
-                    }
-                }).show();
-            }
-        }).attachToRecyclerView(recyclerView);
-
+        setRecyclerView(view);
     }
 
     /////////////////////////
@@ -283,6 +246,47 @@ public class Contacts extends Fragment {
         }
         emailCursor.close();
         return email;
+    }
+
+    /**
+     * Questo metodo imposta l'adapter per il recyclerView e lo swipe
+     * @param view
+     */
+    private void setRecyclerView(@NonNull View view){
+        recyclerView = (RecyclerView) getView().findViewById(R.id.contactsListView);
+        adapter = new ContactsRecyclerAdapter(contactArrayList, getContext());
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        // Aggiungo lo swipe
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                // Prendo la posizione dell'elemento
+                int position = viewHolder.getAdapterPosition();
+                // Prendo l'elemento
+                InfoContact infoContactDeleted = contactArrayList.get(viewHolder.getAdapterPosition());
+                // Cancello l'elemento dalla lista
+                contactArrayList.remove(viewHolder.getAdapterPosition());
+                // Aggiorno la lista
+                adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                Snackbar.make(recyclerView, infoContactDeleted.getName(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // Inserisco il vecchio elemento per "Undo"
+                        contactArrayList.add(position, infoContactDeleted);
+                        // Aggiorno
+                        adapter.notifyItemInserted(position);
+                    }
+                }).show();
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     public void addContact(String contact_ID){
