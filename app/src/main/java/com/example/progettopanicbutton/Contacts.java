@@ -53,6 +53,8 @@ public class Contacts extends Fragment {
     private FloatingActionButton floatingActionButtonAdd;
     // ContactsAdapter
     private ContactsRecyclerAdapter adapter;
+    // RecyclerView
+    private RecyclerView recyclerView;
     // CursorAdapter
     private SimpleCursorAdapter cursorAdapter;
     // RequestCode (public static)
@@ -135,10 +137,12 @@ public class Contacts extends Fragment {
         //ListView listView = (ListView) getView().findViewById(R.id.contactsListView);
         //contactsAdapter = new ContactsAdapter(getActivity(), R.layout.layout_list_view, contactArrayList);
         //listView.setAdapter(contactsAdapter);
-        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.contactsListView);
+        recyclerView = (RecyclerView) getView().findViewById(R.id.contactsListView);
         adapter = new ContactsRecyclerAdapter(contactArrayList, getContext());
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
         // Aggiungo lo swipe
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override

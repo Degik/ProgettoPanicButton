@@ -27,7 +27,7 @@ public class ContactsRecyclerAdapter extends RecyclerView.Adapter<InfoContactHol
     @Override
     public InfoContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         //
         View photoView = inflater.inflate(R.layout.layout_list_view, parent, false);
         InfoContactHolder infoContactHolder = new InfoContactHolder(photoView);
