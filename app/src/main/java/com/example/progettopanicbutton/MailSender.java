@@ -6,6 +6,7 @@ import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -28,8 +29,9 @@ public class MailSender {
         setSession();
         try{
             message = new MimeMessage(session);
+            setupMessage(subject, messageTxt);
         } catch (MessagingException e){
-
+            e.printStackTrace();
         }
     }
 
@@ -43,7 +45,7 @@ public class MailSender {
     }
 
     private void setSession(){
-        Session session = Session.getInstance(properties,
+        session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(username, password);
@@ -53,6 +55,8 @@ public class MailSender {
 
     private void setupMessage(String subject, String messageTxt) throws MessagingException {
         message.setFrom(new InternetAddress(username));
-
+        message.setSubject(subject);
+        message.setText(messageTxt);
+        Transport.send(message);
     }
 }

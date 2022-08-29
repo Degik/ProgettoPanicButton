@@ -2,11 +2,14 @@ package com.example.progettopanicbutton;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +17,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class Panic extends Fragment {
+    // Button panic
+    private Button panicButton;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,5 +65,34 @@ public class Panic extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_panic, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        panicButton = (Button) view.findViewById(R.id.panicButton);
+        panicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PanicManager panicManager = new PanicManager(getContext(), getActivity());
+                if(MainActivity.gpsTrack){
+                    // Gps
+                    // Impostare la posizione nel messaggio
+                }
+                if(MainActivity.voiceRecord){
+                    // Record
+                    // Impostare la registrazione nel messaggio
+                }
+                // Mandare i messaggi
+                if(MainActivity.callPhone){
+                    // Call
+                    // Iniziare le chiamate
+                    for(InfoContact infoContact: MainActivity.contactInfoArrayList){
+                        // Prendo il contatto ed inizio la chiamata verso il suo numero
+                        panicManager.startCall(infoContact.getNumber());
+                    }
+                }
+            }
+        });
     }
 }

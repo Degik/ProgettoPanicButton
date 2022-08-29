@@ -17,8 +17,8 @@
             app:key="voiceRecord"
             app:title="Consenti registrazioni"/>
         <SwitchPreferenceCompat
-            app:key="cameraPhoto"
-            app:title="Consenti foto"/>
+            app:key="callPhone"
+            app:title="Consenti chiamate"/>
 
     </PreferenceCategory>
 

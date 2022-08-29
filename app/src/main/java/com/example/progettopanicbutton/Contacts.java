@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -45,8 +46,6 @@ public class Contacts extends Fragment {
     // Struttura dati per salvare gli id dei contatti preferiti
     // TODO: Implementare il backup dei preferiti
     private HashSet<String> favourite_ID;
-    // In questa struttura vengono raccolte le informazioni di ogni contatto per la listView
-    private ArrayList<InfoContact> contactArrayList;
     // Permission
     private final int PERMISSION_ID = 44;
     // Button
@@ -58,7 +57,7 @@ public class Contacts extends Fragment {
     // CursorAdapter
     private SimpleCursorAdapter cursorAdapter;
     // RequestCode (public static)
-    public final static int REQUEST_PICK = 1;
+    private final int REQUEST_PICK = 1;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -99,14 +98,7 @@ public class Contacts extends Fragment {
         }
 
         //
-        favourite_ID = new HashSet<>();
-        contactArrayList = new ArrayList<>();
-        favourite_ID.add("1");
-        favourite_ID.add("2");
-        favourite_ID.add("3");
-        favourite_ID.add("4");
-        favourite_ID.add("5");
-        getContactsInformation();
+        getContactsInformation(getContext());
         //searchPhone();
     }
 
@@ -121,6 +113,7 @@ public class Contacts extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Pulsante per aggiungere contatti
+        // TODO: Gestire i duplicati
         floatingActionButtonAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonAdd);
         // Controllo se posso accedere ai contatti
         if (checkContactsPermission()) {
@@ -166,17 +159,23 @@ public class Contacts extends Fragment {
     ///////////////////////////////////
     // METODI PER PRELEVARE INFOCONTACT
     ///////////////////////////////////
-    private void getContactsInformation(){
+    public void getContactsInformation(Context context){
         String[] projection = {
                 ContactsContract.Contacts.NAME_RAW_CONTACT_ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_URI
         };
+        favourite_ID = new HashSet<>();
+        favourite_ID.add("1");
+        favourite_ID.add("2");
+        favourite_ID.add("3");
+        favourite_ID.add("4");
+        favourite_ID.add("5");
         String selection_ID = favourite_ID.toString().replace("[", "(").replace("]", ")");
         selection_ID = ContactsContract.Contacts._ID + " IN " + selection_ID;
         System.out.println(selection_ID);
         System.out.println(ContactsContract.Contacts._ID);
-        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  selection_ID, null, null);
+        Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  selection_ID, null, null);
         try{
             while(cursor.moveToNext()){
                 // Ricavo il nome
@@ -184,8 +183,8 @@ public class Contacts extends Fragment {
                 // Ricavo il contatto, per ricavarne il numero in seguito
                 String contactID = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.NAME_RAW_CONTACT_ID));
                 //
-                String phone = takeNumber(contactID);
-                String email = takeEmail(contactID);
+                String phone = takeNumber(contactID, context);
+                String email = takeEmail(contactID, context);
                 // Prendo l'immagine
                 Uri photo = null;
                 if(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)) != null){
@@ -193,7 +192,7 @@ public class Contacts extends Fragment {
                 }
                 // Creo infoContact
                 InfoContact infoContact = new InfoContact(contactID, name, phone, email, photo);
-                contactArrayList.add(infoContact);
+                MainActivity.contactInfoArrayList.add(infoContact);
             }
         } finally {
             cursor.close();
@@ -204,9 +203,10 @@ public class Contacts extends Fragment {
      * Questo metodo usa il cursor per trovare e prelevare il numero
      * dell'utente e ritornare {@code phoneNumber}
      * @param contact_ID Id dell'utente
+     * @param context
      * @return phoneNubmer, altrimenti torna una stringa vuota
      */
-    private String takeNumber(String contact_ID){
+    private String takeNumber(String contact_ID, Context context){
         String phoneNumber = "";
         // Costruisco la where per _id
         String selectionContact_ID = ContactsContract.CommonDataKinds.Phone.RAW_CONTACT_ID + " = " + contact_ID;
@@ -215,7 +215,7 @@ public class Contacts extends Fragment {
                 ContactsContract.CommonDataKinds.Phone.NUMBER
         };
         // Imposto il phoneCursor
-        Cursor phoneCursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projectionPhone, selectionContact_ID,null, null);
+        Cursor phoneCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projectionPhone, selectionContact_ID,null, null);
         if(phoneCursor.moveToFirst()){
             phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
         }
@@ -227,9 +227,10 @@ public class Contacts extends Fragment {
      * Questo metodo usa il cursor per trovare e prelevare l'email
      * dell'utente e ritornare {@code email}
      * @param contact_ID Id dell'utente
+     * @param context
      * @return email, altrimenti torna una strina vuota
      */
-    private String takeEmail(String contact_ID){
+    private String takeEmail(String contact_ID, Context context){
         String email = "";
         // Costruisco la where per _id
         String selectionContact_ID = ContactsContract.CommonDataKinds.Email.RAW_CONTACT_ID + " = " + contact_ID;
@@ -238,7 +239,7 @@ public class Contacts extends Fragment {
                 ContactsContract.CommonDataKinds.Email.DATA
         };
         // Imposto emailCursor
-        Cursor emailCursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, projectionEmail, selectionContact_ID,null, null);
+        Cursor emailCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, projectionEmail, selectionContact_ID,null, null);
         if(emailCursor.moveToFirst()){
             if(ContactsContract.CommonDataKinds.Email.DATA != null){
                 email = emailCursor.getString(emailCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Email.DATA));
@@ -254,7 +255,7 @@ public class Contacts extends Fragment {
      */
     private void setRecyclerView(@NonNull View view){
         recyclerView = (RecyclerView) getView().findViewById(R.id.contactsListView);
-        adapter = new ContactsRecyclerAdapter(contactArrayList, getContext());
+        adapter = new ContactsRecyclerAdapter(MainActivity.contactInfoArrayList, getContext());
         recyclerView.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -271,16 +272,16 @@ public class Contacts extends Fragment {
                 // Prendo la posizione dell'elemento
                 int position = viewHolder.getAdapterPosition();
                 // Prendo l'elemento
-                InfoContact infoContactDeleted = contactArrayList.get(viewHolder.getAdapterPosition());
+                InfoContact infoContactDeleted = MainActivity.contactInfoArrayList.get(viewHolder.getAdapterPosition());
                 // Cancello l'elemento dalla lista
-                contactArrayList.remove(viewHolder.getAdapterPosition());
+                MainActivity.contactInfoArrayList.remove(viewHolder.getAdapterPosition());
                 // Aggiorno la lista
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                 Snackbar.make(recyclerView, "Contatto eliminato", Snackbar.LENGTH_LONG).setAction("annulla", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         // Inserisco il vecchio elemento per "Undo"
-                        contactArrayList.add(position, infoContactDeleted);
+                        MainActivity.contactInfoArrayList.add(position, infoContactDeleted);
                         // Aggiorno
                         adapter.notifyItemInserted(position);
                     }

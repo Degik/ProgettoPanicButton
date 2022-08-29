@@ -29,16 +29,21 @@ import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+    // ResutlCode
+    private final int REQUEST_PICK = 1;
+    private final int REQUEST_CALL = 2;
     // Permission
     private int PERMISSION_ID = 44;
     // RequestCode
     // BottomoNavigationView
     private BottomNavigationView bottomNavigationView;
     // Settings
-    private boolean gpsTrack;
-    private boolean voiceRecord;
-    private boolean cameraPhoto;
+    public static boolean gpsTrack;
+    public static boolean voiceRecord;
+    public static boolean callPhone;
     //Fragment
     private Contacts contactsFragment = new Contacts();
     private Panic panicFragment = new Panic();
@@ -48,8 +53,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private double longitude;
     // ServiceIntentTracker
     private Intent intentServiceTracker;
-    // Button
-    private Button floatingActionButtonAdd;
+    // In questa struttura vengono raccolte le informazioni di ogni contatto
+    // TODO: Creare un set per evitare duplicati e scrivere la equals
+    public static ArrayList<InfoContact> contactInfoArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +69,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         getSupportFragmentManager().beginTransaction().replace(R.id.container, panicFragment).commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
+        contactInfoArrayList = new ArrayList<>();
 
         /*
             Raccolgo le impostazioni
         */
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         gpsTrack = sharedPreferences.getBoolean("gpsTrack", false);
+        voiceRecord = sharedPreferences.getBoolean("voiceRecord", false);
+        callPhone = sharedPreferences.getBoolean("callPhone", false);
 
         // Se il gps è impostato faccio partire il service
         if(gpsTrack){
@@ -85,6 +94,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             //  TODO: Lavorare al termine del servizio di tracker
             if(ServiceTracker.statusServiceTracker){
                 stopService(intentServiceTracker);
+            }
+        }
+
+        if(callPhone){
+            if(!checkCallPermission()){
+                requestCallPermission();
             }
         }
     }
@@ -126,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             // Prendiamo un contatto
-            case Contacts.REQUEST_PICK:
+            case REQUEST_PICK:
                 if (resultCode == Activity.RESULT_OK) {
                     Uri contactData = data.getData();
                     Cursor cursor = getContentResolver().query(contactData, null, null, null, null);
@@ -139,6 +154,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     }
                     cursor.close();
                 }
+                break;
+            case REQUEST_CALL:
+                // TODO: Implementare la risposta
                 break;
         }
     }
@@ -154,6 +172,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
+
+    private boolean checkCallPermission(){
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestCallPermission(){
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.READ_PHONE_STATE}, PERMISSION_ID);
     }
 
     /////////////////////////
