@@ -14,7 +14,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.sql.DataSource;
 
 public class MailSender {
     private final String username = "mailtestdvb@gmail.com";
@@ -67,6 +66,6 @@ public class MailSender {
     }
 
     private void addAttachment(Multipart multipart, String filename){
-
+        //DataSource
     }
 }

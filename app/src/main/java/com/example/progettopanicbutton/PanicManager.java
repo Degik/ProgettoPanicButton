@@ -31,6 +31,9 @@ public class PanicManager {
     // InfoContact
     private InfoContact infoContact;
 
+    //first boolean
+    private boolean first = true;
+
     // Invio email
     // Registrazione
     // Invio chiamata
@@ -109,7 +112,7 @@ public class PanicManager {
         // Trovo l'indice
         int indexContact = MainActivity.contactInfoArrayList.indexOf(infoContact);
         // Porto avanti l'indice e aggiorno infoContact
-        if(indexContact != MainActivity.contactInfoArrayList.size()){
+        if(indexContact != MainActivity.contactInfoArrayList.size() - 1){
             indexContact++;
             infoContact = MainActivity.contactInfoArrayList.get(indexContact);
         }

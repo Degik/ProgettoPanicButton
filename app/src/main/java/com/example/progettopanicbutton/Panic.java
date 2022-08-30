@@ -92,6 +92,7 @@ public class Panic extends Fragment {
                     // Impostare la registrazione nel messaggio
                     panicManager.startRecording();
                     Uri recordUri = panicManager.stopRecording(5);
+                    System.out.println(recordUri);
 
                 }
                 // Mandare i messaggi
