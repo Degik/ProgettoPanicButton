@@ -1,15 +1,22 @@
 package com.example.progettopanicbutton;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.telephony.TelephonyScanManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,13 +93,11 @@ public class Panic extends Fragment {
                 // Mandare i messaggi
                 if(MainActivity.callPhone){
                     // Call
-                    // Iniziare le chiamate
-                    for(InfoContact infoContact: MainActivity.contactInfoArrayList){
-                        // Prendo il contatto ed inizio la chiamata verso il suo numero
-                        panicManager.startCall(infoContact.getNumber());
-                    }
+                    panicManager.startCall();
                 }
             }
         });
     }
+
+
 }

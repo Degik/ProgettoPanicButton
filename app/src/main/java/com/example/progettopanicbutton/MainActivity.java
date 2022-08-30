@@ -34,7 +34,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     // ResutlCode
     private final int REQUEST_PICK = 1;
-    private final int REQUEST_CALL = 2;
     // Permission
     private int PERMISSION_ID = 44;
     // RequestCode
@@ -154,9 +153,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     }
                     cursor.close();
                 }
-                break;
-            case REQUEST_CALL:
-                // TODO: Implementare la risposta
                 break;
         }
     }

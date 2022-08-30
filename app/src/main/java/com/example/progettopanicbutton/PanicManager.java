@@ -3,9 +3,12 @@ package com.example.progettopanicbutton;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.IDNA;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PanicManager {
-    // Codice per le chiamate
-    private final int REQUEST_CALL = 2;
     // Context
     private Context context;
     // Activity
@@ -25,6 +26,8 @@ public class PanicManager {
     private File fileRecord = null;
     // ContactFragment
     private Contacts contacts;
+    // InfoContact
+    private InfoContact infoContact;
 
     // Invio email
     // Registrazione
@@ -88,11 +91,26 @@ public class PanicManager {
         recorder.release();
     }
 
-    public void startCall(String numberPhone){
+    public void startCall(){
+        infoContact = MainActivity.contactInfoArrayList.get(0);
+        call(infoContact.getNumber());
+        // Listener
+        PhoneCallListener phoneCallListener = new PhoneCallListener();
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(phoneCallListener, PhoneCallListener.LISTEN_CALL_STATE);
+    }
+
+    private void call(String numberPhone){
         Intent intent = new Intent(Intent.ACTION_CALL);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setData(Uri.parse("tel:" + numberPhone));
-        activity.startActivityForResult(intent, REQUEST_CALL);
+        activity.startActivity(intent);
+        // Trovo l'indice
+        int indexContact = MainActivity.contactInfoArrayList.indexOf(infoContact);
+        // Porto avanti l'indice e aggiorno infoContact
+        if(indexContact != MainActivity.contactInfoArrayList.size()){
+            indexContact++;
+            infoContact = MainActivity.contactInfoArrayList.get(indexContact);
+        }
     }
 
     public void sendMail(){
@@ -106,6 +124,40 @@ public class PanicManager {
             }
         } catch (InterruptedException e){
             e.printStackTrace();
+        }
+    }
+
+    private class PhoneCallListener extends PhoneStateListener {
+        private boolean isPhoneCalling = false;
+
+        @Override
+        public void onCallStateChanged(int state, String phoneNumber) {
+            super.onCallStateChanged(state, phoneNumber);
+            // TODO: Bugfix
+            switch (state) {
+                case TelephonyManager.CALL_STATE_IDLE:
+                    //CALL_STATE_IDLE;
+                    if(isPhoneCalling){
+                        Intent i = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        call(infoContact.getNumber());
+                        isPhoneCalling = false;
+                    }
+                    break;
+
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    //CALL_STATE_OFFHOOK;
+                    //ACTIVE
+                    isPhoneCalling = true;
+                    break;
+
+                case TelephonyManager.CALL_STATE_RINGING:
+                    //CALL_STATE_RINGING
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }
