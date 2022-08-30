@@ -6,6 +6,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,11 +16,15 @@ import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressLint("MissingPermission")
 public class ServiceTracker extends Service {
+    // Context
+    private Context context = this;
     // Status service (static)
     public static boolean statusServiceTracker = false;
     // Parametri

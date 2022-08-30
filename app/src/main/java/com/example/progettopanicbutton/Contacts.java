@@ -265,6 +265,9 @@ public class Contacts extends Fragment {
                 InfoContact infoContactDeleted = MainActivity.contactInfoArrayList.get(viewHolder.getAdapterPosition());
                 // Cancello l'elemento dalla lista
                 MainActivity.contactInfoArrayList.remove(viewHolder.getAdapterPosition());
+                // Elimino dalla favouriteID
+                String idDeleted = infoContactDeleted.getId();
+                MainActivity.favourite_ID.remove(idDeleted);
                 // Aggiorno la lista
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
                 Snackbar.make(recyclerView, "Contatto eliminato", Snackbar.LENGTH_LONG).setAction("annulla", new View.OnClickListener() {
@@ -272,6 +275,8 @@ public class Contacts extends Fragment {
                     public void onClick(View view) {
                         // Inserisco il vecchio elemento per "Undo"
                         MainActivity.contactInfoArrayList.add(position, infoContactDeleted);
+                        // Inserisco in favouriteID
+                        MainActivity.favourite_ID.add(idDeleted);
                         // Aggiorno
                         adapter.notifyItemInserted(position);
                     }

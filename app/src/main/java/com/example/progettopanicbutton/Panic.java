@@ -3,6 +3,8 @@ package com.example.progettopanicbutton;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,6 +20,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import javax.mail.MessagingException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -83,9 +91,15 @@ public class Panic extends Fragment {
             @Override
             public void onClick(View view) {
                 PanicManager panicManager = new PanicManager(getContext(), getActivity());
+                MailSender mailSender = new MailSender();
                 if(MainActivity.gpsTrack){
                     // Gps
                     // Impostare la posizione nel messaggio
+                    try {
+                        mailSender.addLocation(getLocationAddress());
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 if(MainActivity.voiceRecord){
                     // Record
@@ -93,7 +107,20 @@ public class Panic extends Fragment {
                     panicManager.startRecording();
                     Uri recordUri = panicManager.stopRecording(5);
                     System.out.println(recordUri);
-
+                    try {
+                        mailSender.addAttachment(String.valueOf(recordUri));
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for(InfoContact infoContact: MainActivity.contactInfoArrayList){
+                    try {
+                        mailSender.addRecipient(infoContact.getEmail());
+                        mailSender.sendMail(MainActivity.backup.getSignature());
+                        mailSender.sendMail();
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // Mandare i messaggi
                 if(MainActivity.callPhone){
@@ -104,5 +131,17 @@ public class Panic extends Fragment {
         });
     }
 
+    private String getLocationAddress(){
+        List<Address> addresses;
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+        String address = null;
+        try {
+            addresses = geocoder.getFromLocation(ServiceTracker.getLatitude(), ServiceTracker.getLongitude(), 1);
+            address = addresses.get(0).getAddressLine(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return address;
+    }
 
 }
