@@ -30,6 +30,8 @@ import android.widget.Button;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     // ResutlCode
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public static boolean gpsTrack;
     public static boolean voiceRecord;
     public static boolean callPhone;
+    public static String signature;
     //Fragment
     private Contacts contactsFragment = new Contacts();
     private Panic panicFragment = new Panic();
@@ -55,6 +58,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     // In questa struttura vengono raccolte le informazioni di ogni contatto
     // TODO: Creare un set per evitare duplicati e scrivere la equals
     public static ArrayList<InfoContact> contactInfoArrayList;
+    // Struttura dati per salvare gli id dei contatti preferiti
+    // TODO: Implementare il backup dei preferiti
+    public static HashSet<String> favourite_ID;
+    //  Backup - Questo deve essere accessibile a tutti
+    public static Backup backup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +78,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         contactInfoArrayList = new ArrayList<>();
 
+        if(!checkStoragePermission()){
+            requestStoragePermission();
+        }
+
         /*
             Raccolgo le impostazioni
         */
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        gpsTrack = sharedPreferences.getBoolean("gpsTrack", false);
-        voiceRecord = sharedPreferences.getBoolean("voiceRecord", false);
-        callPhone = sharedPreferences.getBoolean("callPhone", false);
+        backup = new Backup(this);
+        backup.setFirstStart();
+        backup.setupDefault();
+        gpsTrack = backup.gpsEnabled();
+        voiceRecord = backup.recordingEnabled();
+        callPhone = backup.callEnabled();
+
+        // Verifico se è il primo avvio
+        if(backup.getFirstStart()){
+            // Creo una HashSet vuota e ne faccio il backup
+             favourite_ID = new HashSet<>();
+             backup.makeBackup();
+        } else {
+            // Prendo il backup già esistente e costruisco l'HashSet a partire dal Set
+            Set<String> list = backup.getBackup();
+            favourite_ID = new HashSet<>(list);
+        }
 
         // Se il gps è impostato faccio partire il service
         if(gpsTrack){
@@ -95,10 +120,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 stopService(intentServiceTracker);
             }
         }
-
+        //
         if(callPhone){
             if(!checkCallPermission()){
                 requestCallPermission();
+            }
+        }
+        //
+        if(voiceRecord){
+            if(!checkRecordingPermission()){
+                requestRecordingPermission();
             }
         }
     }
@@ -147,7 +178,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     if (cursor.moveToFirst()) {
                         String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.NAME_RAW_CONTACT_ID));
                         //
-                        contactsFragment.addContact(id);
+                        favourite_ID.add(id);
+                        backup.makeBackup();
+                        contactsFragment.updateAdapter();
                         System.out.println(id);
                         //
                     }
@@ -178,6 +211,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.CALL_PHONE,
                 Manifest.permission.READ_PHONE_STATE}, PERMISSION_ID);
+    }
+
+    private boolean checkStoragePermission(){
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestStoragePermission(){
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_ID);
+    }
+
+    private boolean checkRecordingPermission(){
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestRecordingPermission(){
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.RECORD_AUDIO}, PERMISSION_ID);
     }
 
     /////////////////////////

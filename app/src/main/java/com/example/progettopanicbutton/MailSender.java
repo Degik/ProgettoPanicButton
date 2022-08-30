@@ -1,14 +1,20 @@
 package com.example.progettopanicbutton;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.mail.BodyPart;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.sql.DataSource;
 
 public class MailSender {
     private final String username = "mailtestdvb@gmail.com";
@@ -58,5 +64,9 @@ public class MailSender {
         message.setSubject(subject);
         message.setText(messageTxt);
         Transport.send(message);
+    }
+
+    private void addAttachment(Multipart multipart, String filename){
+
     }
 }

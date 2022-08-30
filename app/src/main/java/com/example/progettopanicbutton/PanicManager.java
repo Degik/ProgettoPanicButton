@@ -10,6 +10,8 @@ import android.os.Environment;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
+import androidx.core.content.FileProvider;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -57,9 +59,8 @@ public class PanicManager {
 
     /**
      * Il metodo crea un file dove verrà salvata la registrazione ed impostata dopo essere stata fermata
-     * @param fileName
      */
-    public void startRecording(String fileName){
+    public void startRecording(){
         // Creo il file record
         try {
             fileRecord = createRecordFile();
@@ -69,7 +70,7 @@ public class PanicManager {
         // Imposto i parametri per la registrazione
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFile(fileName);
+        recorder.setOutputFile(currentRecordPath);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {
@@ -85,10 +86,11 @@ public class PanicManager {
      * Il motodo termina la registrazione dopo il time
      * @param time
      */
-    public void stopRecording(int time){
+    public Uri stopRecording(int time){
         sleep(time);
         recorder.stop();
         recorder.release();
+        return FileProvider.getUriForFile(context, "com.example.progettopanicbutton.fileprovider", fileRecord);
     }
 
     public void startCall(){

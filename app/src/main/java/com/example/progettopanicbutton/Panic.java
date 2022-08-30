@@ -3,6 +3,7 @@ package com.example.progettopanicbutton;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -89,6 +90,9 @@ public class Panic extends Fragment {
                 if(MainActivity.voiceRecord){
                     // Record
                     // Impostare la registrazione nel messaggio
+                    panicManager.startRecording();
+                    Uri recordUri = panicManager.stopRecording(5);
+
                 }
                 // Mandare i messaggi
                 if(MainActivity.callPhone){

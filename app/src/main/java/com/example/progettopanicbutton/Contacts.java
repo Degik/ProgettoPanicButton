@@ -42,10 +42,6 @@ import java.util.HashSet;
  * create an instance of this fragment.
  */
 public class Contacts extends Fragment {
-
-    // Struttura dati per salvare gli id dei contatti preferiti
-    // TODO: Implementare il backup dei preferiti
-    private HashSet<String> favourite_ID;
     // Permission
     private final int PERMISSION_ID = 44;
     // Button
@@ -165,13 +161,7 @@ public class Contacts extends Fragment {
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_URI
         };
-        favourite_ID = new HashSet<>();
-        favourite_ID.add("1");
-        favourite_ID.add("2");
-        favourite_ID.add("3");
-        favourite_ID.add("4");
-        favourite_ID.add("5");
-        String selection_ID = favourite_ID.toString().replace("[", "(").replace("]", ")");
+        String selection_ID = MainActivity.favourite_ID.toString().replace("[", "(").replace("]", ")");
         selection_ID = ContactsContract.Contacts._ID + " IN " + selection_ID;
         System.out.println(selection_ID);
         System.out.println(ContactsContract.Contacts._ID);
@@ -290,7 +280,10 @@ public class Contacts extends Fragment {
         }).attachToRecyclerView(recyclerView);
     }
 
-    public void addContact(String contact_ID){
-        favourite_ID.add(contact_ID);
+    /**
+     * Notifico il cambiamento della lista
+     */
+    public void updateAdapter(){
+        adapter.notifyDataSetChanged();
     }
 }
