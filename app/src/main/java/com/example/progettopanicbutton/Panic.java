@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.StrictMode;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.TelephonyScanManager;
@@ -92,6 +93,7 @@ public class Panic extends Fragment {
             public void onClick(View view) {
                 PanicManager panicManager = new PanicManager(getContext(), getActivity());
                 MailSender mailSender = new MailSender();
+                mailSender.sendMail(MainActivity.backup.getSignature());
                 if(MainActivity.gpsTrack){
                     // Gps
                     // Impostare la posizione nel messaggio
@@ -113,15 +115,13 @@ public class Panic extends Fragment {
                         e.printStackTrace();
                     }
                 }
-                for(InfoContact infoContact: MainActivity.contactInfoArrayList){
-                    try {
-                        mailSender.addRecipient(infoContact.getEmail());
-                        mailSender.sendMail(MainActivity.backup.getSignature());
-                        mailSender.sendMail();
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    }
-                }
+                //
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                
+                ThreadMail threadMail = new ThreadMail(mailSender);
+                Thread thread = new Thread(threadMail);
+                thread.start();
                 // Mandare i messaggi
                 if(MainActivity.callPhone){
                     // Call

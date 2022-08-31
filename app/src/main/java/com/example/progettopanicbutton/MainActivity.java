@@ -132,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 requestRecordingPermission();
             }
         }
+
+        if(!checkInternetPermission()){
+            requestInternetPermission();
+        }
     }
 
     @Override
@@ -230,6 +234,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void requestRecordingPermission(){
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.RECORD_AUDIO}, PERMISSION_ID);
+    }
+
+    private boolean checkInternetPermission(){
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestInternetPermission(){
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.INTERNET}, PERMISSION_ID);
     }
 
     /////////////////////////
