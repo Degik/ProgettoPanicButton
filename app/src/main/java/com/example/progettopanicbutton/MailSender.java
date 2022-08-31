@@ -14,14 +14,13 @@ import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.activation.DataSource;
 import javax.mail.internet.MimeMultipart;
 
-public class MailSender {
+public class MailSender extends  javax.mail.Authenticator {
     private final String username = "mailtestdvb@gmail.com";
     private final String password = "isa990021";
     //
@@ -36,7 +35,6 @@ public class MailSender {
 
     public void sendMail(String subject){
         configProperties();
-        setSession();
         try{
             message = new MimeMessage(session);
             setupMessage(subject);
@@ -47,24 +45,25 @@ public class MailSender {
 
     private void configProperties(){
         properties = new Properties();
-        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.setProperty("mail.smtp.host", "smtp");
+        properties.setProperty("mail.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "465");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.socketFactory.port", "465");
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.socketFactory.fallback", "false");
+        properties.setProperty("mail.smtp.quitwait", "false");
+
+        session = Session.getInstance(properties, this);
     }
 
-    private void setSession(){
-        session = Session.getInstance(properties,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(username,password);
     }
 
     private void setupMessage(String subject) throws MessagingException {
-        message.setFrom(new InternetAddress(username));
+        message.setSender(new InternetAddress(username));
         message.setSubject(subject);
         multipart = new MimeMultipart();
     }
