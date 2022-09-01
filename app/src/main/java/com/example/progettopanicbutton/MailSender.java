@@ -2,6 +2,7 @@ package com.example.progettopanicbutton;
 
 import android.net.Uri;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -90,16 +91,21 @@ public class MailSender {
         multipart = new MimeMultipart();
     }
 
-    public void addAttachment(String filename) throws MessagingException {
-        DataSource source = new FileDataSource(filename);
+    public void addAttachment(File recordFile) throws MessagingException {
+        // Recording bodyPart
+        DataSource source = new FileDataSource(recordFile);
         BodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setDataHandler(new DataHandler(source));
-        messageBodyPart.setFileName(filename);
+        messageBodyPart.setFileName(recordFile.getName());
         multipart.addBodyPart(messageBodyPart);
+        message.setContent(multipart);
     }
 
     public void addLocation(String locationAddress) throws MessagingException {
-        message.setText(locationAddress);
+        // Location bodyPart
+        BodyPart messageTextBodyPart = new MimeBodyPart();
+        messageTextBodyPart.setContent(locationAddress, "text/plain; charset=UTF-8");
+        multipart.addBodyPart(messageTextBodyPart);
     }
 
     public void addRecipient(String destinatario) throws MessagingException {

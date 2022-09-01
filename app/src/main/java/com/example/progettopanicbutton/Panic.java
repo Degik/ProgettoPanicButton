@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.os.StrictMode;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -22,7 +23,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 
@@ -107,10 +110,10 @@ public class Panic extends Fragment {
                     // Record
                     // Impostare la registrazione nel messaggio
                     panicManager.startRecording();
-                    Uri recordUri = panicManager.stopRecording(5);
-                    System.out.println(recordUri);
+                    File recordFile = panicManager.stopRecording(5);
+                    System.out.println(recordFile.getAbsolutePath());
                     try {
-                        mailSender.addAttachment(String.valueOf(recordUri));
+                        mailSender.addAttachment(recordFile);
                     } catch (MessagingException e) {
                         e.printStackTrace();
                     }

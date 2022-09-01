@@ -90,11 +90,11 @@ public class PanicManager {
      * Il motodo termina la registrazione dopo il time
      * @param time
      */
-    public Uri stopRecording(int time){
+    public File stopRecording(int time){
         sleep(time);
         recorder.stop();
         recorder.release();
-        return FileProvider.getUriForFile(context, "com.example.progettopanicbutton.fileprovider", fileRecord);
+        return fileRecord;
     }
 
     public void startCall(){
