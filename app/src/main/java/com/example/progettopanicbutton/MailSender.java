@@ -98,7 +98,6 @@ public class MailSender {
         messageBodyPart.setDataHandler(new DataHandler(source));
         messageBodyPart.setFileName(recordFile.getName());
         multipart.addBodyPart(messageBodyPart);
-        message.setContent(multipart);
     }
 
     public void addLocation(String locationAddress) throws MessagingException {
@@ -113,6 +112,7 @@ public class MailSender {
     }
 
     public void sendMail() throws MessagingException {
+        message.setContent(multipart);
         Transport.send(message);
     }
 }

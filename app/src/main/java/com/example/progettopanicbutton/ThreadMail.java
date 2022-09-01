@@ -1,5 +1,8 @@
 package com.example.progettopanicbutton;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import javax.mail.MessagingException;
 
 public class ThreadMail implements Runnable{

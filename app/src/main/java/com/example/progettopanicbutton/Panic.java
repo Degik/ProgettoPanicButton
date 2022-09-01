@@ -96,7 +96,7 @@ public class Panic extends Fragment {
             public void onClick(View view) {
                 PanicManager panicManager = new PanicManager(getContext(), getActivity());
                 MailSender mailSender = new MailSender();
-                mailSender.sendMail(MainActivity.backup.getSignature());
+                mailSender.sendMail(MainActivity.signature);
                 if(MainActivity.gpsTrack){
                     // Gps
                     // Impostare la posizione nel messaggio
@@ -122,9 +122,11 @@ public class Panic extends Fragment {
                 StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                 StrictMode.setThreadPolicy(policy);
                 
-                ThreadMail threadMail = new ThreadMail(mailSender);
-                Thread thread = new Thread(threadMail);
-                thread.start();
+                if(MainActivity.voiceRecord || MainActivity.gpsTrack){
+                    ThreadMail threadMail = new ThreadMail(mailSender);
+                    Thread thread = new Thread(threadMail);
+                    thread.start();
+                }
                 // Mandare i messaggi
                 if(MainActivity.callPhone){
                     // Call

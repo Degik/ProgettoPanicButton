@@ -37,6 +37,8 @@ public class ServiceTracker extends Service {
     private static Location myLocation;
     private static double latitude;
     private static double longitude;
+    // Intent
+    public static Intent serviceTrackerIntent;
 
 
     public ServiceTracker() {
@@ -63,6 +65,12 @@ public class ServiceTracker extends Service {
             }
         }
         System.out.println("ServiceTracker avviato con successo!");
+    }
+
+    @Override
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+        serviceTrackerIntent = intent;
     }
 
     @Override
@@ -93,5 +101,7 @@ public class ServiceTracker extends Service {
         longitude = myLocation.getLongitude();
         return longitude;
     }
+
+
 
 }

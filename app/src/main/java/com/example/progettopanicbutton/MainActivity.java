@@ -50,10 +50,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     //Fragment
     private Contacts contactsFragment = new Contacts();
     private Panic panicFragment = new Panic();
-    // Location info
-    private Location location;
-    private double latitude;
-    private double longitude;
     // ServiceIntentTracker
     private Intent intentServiceTracker;
     // In questa struttura vengono raccolte le informazioni di ogni contatto
@@ -91,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         gpsTrack = backup.gpsEnabled();
         voiceRecord = backup.recordingEnabled();
         callPhone = backup.callEnabled();
+        signature = backup.getSignature();
 
         // Verifico se è il primo avvio
         if(backup.getFirstStart()){
@@ -109,17 +106,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if(gpsTrack){
             // Controllo i permessi
             if(checkLocationPermission()){
-                // startServiceTracker
-                startServiceTracker();
+                if(!ServiceTracker.statusServiceTracker){
+                    // startServiceTracker
+                    startServiceTracker();
+                }
 
             } else {
                 // Richiedo i permessi
                 requestLocationPermission();
             }
         } else {
-            //  TODO: Lavorare al termine del servizio di tracker
             if(ServiceTracker.statusServiceTracker){
-                stopService(intentServiceTracker);
+                stopService(ServiceTracker.serviceTrackerIntent);
             }
         }
         //
@@ -137,6 +135,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         if(!checkInternetPermission()){
             requestInternetPermission();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(SettingsActivity.settingsChanged){
+            this.recreate();
+            SettingsActivity.settingsChanged = false;
         }
     }
 

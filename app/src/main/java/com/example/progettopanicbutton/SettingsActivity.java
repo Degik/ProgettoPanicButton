@@ -1,5 +1,6 @@
 package com.example.progettopanicbutton;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
@@ -7,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsActivity extends AppCompatActivity {
+    public static boolean settingsChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,8 @@ public class SettingsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        // Se true notifica il riavvio per le nuove impostazioni alla MainActivity
+        settingsChanged = true;
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
