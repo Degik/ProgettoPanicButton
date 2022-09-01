@@ -182,7 +182,10 @@ public class Contacts extends Fragment {
                 }
                 // Creo infoContact
                 InfoContact infoContact = new InfoContact(contactID, name, phone, email, photo);
-                MainActivity.contactInfoArrayList.add(infoContact);
+                // Per evitare duplicati controllo la loro presenza
+                if(!MainActivity.contactInfoArrayList.contains(infoContact)){
+                    MainActivity.contactInfoArrayList.add(infoContact);
+                }
             }
         } finally {
             cursor.close();
@@ -289,6 +292,6 @@ public class Contacts extends Fragment {
      * Notifico il cambiamento della lista
      */
     public void updateAdapter(){
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(MainActivity.contactInfoArrayList.size());
     }
 }

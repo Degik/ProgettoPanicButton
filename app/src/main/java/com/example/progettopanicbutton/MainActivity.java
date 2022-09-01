@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -182,10 +183,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     if (cursor.moveToFirst()) {
                         String id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.NAME_RAW_CONTACT_ID));
                         //
-                        favourite_ID.add(id);
-                        backup.makeBackup();
-                        contactsFragment.updateAdapter();
-                        System.out.println(id);
+                        if(favourite_ID.contains(id)){
+                            Toast.makeText(this, "Contatto già tra i preferiti", Toast.LENGTH_LONG).show();
+
+                        } else {
+                            favourite_ID.add(id);
+                            backup.makeBackup();
+                            contactsFragment.updateAdapter();
+                            System.out.println(id);
+                        }
                         //
                     }
                     cursor.close();
