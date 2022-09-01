@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                         } else {
                             favourite_ID.add(id);
+                            contactsFragment.getContactInformation(this, id);
                             backup.makeBackup();
                             contactsFragment.updateAdapter();
                             System.out.println(id);

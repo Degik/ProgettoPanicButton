@@ -91,46 +91,51 @@ public class Panic extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         panicButton = (Button) view.findViewById(R.id.panicButton);
+
         panicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PanicManager panicManager = new PanicManager(getContext(), getActivity());
-                MailSender mailSender = new MailSender();
-                mailSender.sendMail(MainActivity.signature);
-                if(MainActivity.gpsTrack){
-                    // Gps
-                    // Impostare la posizione nel messaggio
-                    try {
-                        mailSender.addLocation(getLocationAddress());
-                    } catch (MessagingException e) {
-                        Toast.makeText(getContext(), "Posizione non trovata", Toast.LENGTH_LONG).show();
+                if(MainActivity.favourite_ID.size() > 0){
+                    PanicManager panicManager = new PanicManager(getContext(), getActivity());
+                    MailSender mailSender = new MailSender();
+                    mailSender.sendMail(MainActivity.signature);
+                    if(MainActivity.gpsTrack){
+                        // Gps
+                        // Impostare la posizione nel messaggio
+                        try {
+                            mailSender.addLocation(getLocationAddress());
+                        } catch (MessagingException e) {
+                            Toast.makeText(getContext(), "Posizione non trovata", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-                if(MainActivity.voiceRecord){
-                    // Record
-                    // Impostare la registrazione nel messaggio
-                    panicManager.startRecording();
-                    File recordFile = panicManager.stopRecording(5);
-                    System.out.println(recordFile.getAbsolutePath());
-                    try {
-                        mailSender.addAttachment(recordFile);
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
+                    if(MainActivity.voiceRecord){
+                        // Record
+                        // Impostare la registrazione nel messaggio
+                        panicManager.startRecording();
+                        File recordFile = panicManager.stopRecording(5);
+                        System.out.println(recordFile.getAbsolutePath());
+                        try {
+                            mailSender.addAttachment(recordFile);
+                        } catch (MessagingException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-                //
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                
-                if(MainActivity.voiceRecord || MainActivity.gpsTrack){
-                    ThreadMail threadMail = new ThreadMail(mailSender);
-                    Thread thread = new Thread(threadMail);
-                    thread.start();
-                }
-                // Mandare i messaggi
-                if(MainActivity.callPhone){
-                    // Call
-                    panicManager.startCall();
+                    //
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+
+                    if(MainActivity.voiceRecord || MainActivity.gpsTrack){
+                        ThreadMail threadMail = new ThreadMail(mailSender);
+                        Thread thread = new Thread(threadMail);
+                        thread.start();
+                    }
+                    // Mandare i messaggi
+                    if(MainActivity.callPhone){
+                        // Call
+                        panicManager.startCall();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Devi aggiungere un contatto!", Toast.LENGTH_LONG).show();
                 }
             }
         });

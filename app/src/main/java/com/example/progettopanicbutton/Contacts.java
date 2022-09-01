@@ -242,6 +242,39 @@ public class Contacts extends Fragment {
         return email;
     }
 
+    public void getContactInformation(Context context, String id){
+        String[] projection = {
+                ContactsContract.Contacts.NAME_RAW_CONTACT_ID,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.PHOTO_URI
+        };
+        Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection,  ContactsContract.Contacts._ID + "=" + id, null, null);
+        try{
+            while(cursor.moveToNext()){
+                // Ricavo il nome
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+                // Ricavo il contatto, per ricavarne il numero in seguito
+                String contactID = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.NAME_RAW_CONTACT_ID));
+                //
+                String phone = takeNumber(contactID, context);
+                String email = takeEmail(contactID, context);
+                // Prendo l'immagine
+                Uri photo = null;
+                if(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)) != null){
+                    photo = Uri.parse(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)));
+                }
+                // Creo infoContact
+                InfoContact infoContact = new InfoContact(contactID, name, phone, email, photo);
+                // Per evitare duplicati controllo la loro presenza
+                if(!MainActivity.contactInfoArrayList.contains(infoContact)){
+                    MainActivity.contactInfoArrayList.add(0, infoContact);
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
     /**
      * Questo metodo imposta l'adapter per il recyclerView e lo swipe
      * @param view
@@ -273,6 +306,8 @@ public class Contacts extends Fragment {
                 MainActivity.favourite_ID.remove(idDeleted);
                 // Aggiorno la lista
                 adapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                // Effettuo il backup
+                MainActivity.backup.makeBackup();
                 Snackbar.make(recyclerView, "Contatto eliminato", Snackbar.LENGTH_LONG).setAction("annulla", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -280,6 +315,8 @@ public class Contacts extends Fragment {
                         MainActivity.contactInfoArrayList.add(position, infoContactDeleted);
                         // Inserisco in favouriteID
                         MainActivity.favourite_ID.add(idDeleted);
+                        // Effettuo il backup
+                        MainActivity.backup.makeBackup();
                         // Aggiorno
                         adapter.notifyItemInserted(position);
                     }
@@ -292,6 +329,6 @@ public class Contacts extends Fragment {
      * Notifico il cambiamento della lista
      */
     public void updateAdapter(){
-        adapter.notifyItemInserted(MainActivity.contactInfoArrayList.size());
+        adapter.notifyItemInserted(0);
     }
 }
