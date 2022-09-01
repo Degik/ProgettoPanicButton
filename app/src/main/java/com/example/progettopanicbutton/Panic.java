@@ -100,7 +100,7 @@ public class Panic extends Fragment {
                     try {
                         mailSender.addLocation(getLocationAddress());
                     } catch (MessagingException e) {
-                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Posizione non trovata", Toast.LENGTH_LONG).show();
                     }
                 }
                 if(MainActivity.voiceRecord){
@@ -139,7 +139,7 @@ public class Panic extends Fragment {
             addresses = geocoder.getFromLocation(ServiceTracker.getLatitude(), ServiceTracker.getLongitude(), 1);
             address = addresses.get(0).getAddressLine(0);
         } catch (IOException e) {
-            e.printStackTrace();
+            //
         }
         return address;
     }
