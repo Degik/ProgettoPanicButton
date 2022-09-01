@@ -13,8 +13,10 @@ public class ThreadMail implements Runnable{
     public void run() {
         for(InfoContact infoContact: MainActivity.contactInfoArrayList){
             try {
-                mailSender.addRecipient(infoContact.getEmail());
-                mailSender.sendMail();
+                if(!infoContact.getEmail().equals("")){
+                    mailSender.addRecipient(infoContact.getEmail());
+                    mailSender.sendMail();
+                }
             } catch (MessagingException e) {
                 e.printStackTrace();
             }

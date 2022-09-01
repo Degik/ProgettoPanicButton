@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             Raccolgo le impostazioni
         */
         backup = new Backup(this);
-        backup.setFirstStart();
         backup.setupDefault();
         gpsTrack = backup.gpsEnabled();
         voiceRecord = backup.recordingEnabled();
@@ -98,10 +97,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             // Creo una HashSet vuota e ne faccio il backup
              favourite_ID = new HashSet<>();
              backup.makeBackup();
+             backup.setFirstStart();
         } else {
             // Prendo il backup già esistente e costruisco l'HashSet a partire dal Set
             Set<String> list = backup.getBackup();
             favourite_ID = new HashSet<>(list);
+            backup.makeBackup();
         }
 
         // Se il gps è impostato faccio partire il service
