@@ -20,9 +20,9 @@ import javax.mail.internet.MimeMessage;
 import javax.activation.DataSource;
 import javax.mail.internet.MimeMultipart;
 
-public class MailSender extends  javax.mail.Authenticator {
-    private final String username = "mailtestdvb@gmail.com";
-    private final String password = "isa990021";
+public class MailSender {
+    private final String username = "bulotta@outlook.com";
+    private final String password = "davide990021";
     //
     private Properties properties;
     private Session session;
@@ -35,6 +35,7 @@ public class MailSender extends  javax.mail.Authenticator {
 
     public void sendMail(String subject){
         configProperties();
+        setSession();
         try{
             message = new MimeMessage(session);
             setupMessage(subject);
@@ -42,7 +43,7 @@ public class MailSender extends  javax.mail.Authenticator {
             e.printStackTrace();
         }
     }
-
+    /*
     private void configProperties(){
         properties = new Properties();
         properties.setProperty("mail.smtp.host", "smtp");
@@ -55,11 +56,32 @@ public class MailSender extends  javax.mail.Authenticator {
         properties.setProperty("mail.smtp.quitwait", "false");
 
         session = Session.getInstance(properties, this);
+    }*/
+
+    private  void configProperties(){
+        properties = new Properties();
+        properties.put("mail.smtp.user", username);
+        properties.put("mail.smtp.host", "smtp-mail.outlook.com");
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.starttls.enable","true");
+        properties.put("mail.smtp.auth", "true");
+
+        //session = Session.getInstance(properties, this);
     }
 
+    /*
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
         return new PasswordAuthentication(username,password);
+    }*/
+
+    private void setSession(){
+        session = Session.getInstance(properties,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
     }
 
     private void setupMessage(String subject) throws MessagingException {
