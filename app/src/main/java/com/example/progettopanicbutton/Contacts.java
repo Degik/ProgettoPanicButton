@@ -54,12 +54,10 @@ public class Contacts extends Fragment {
     private SimpleCursorAdapter cursorAdapter;
     // RequestCode (public static)
     private final int REQUEST_PICK = 1;
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -75,7 +73,6 @@ public class Contacts extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment Contacts.
      */
-    // TODO: Rename and change types and number of parameters
     public static Contacts newInstance(String param1, String param2) {
         Contacts fragment = new Contacts();
         Bundle args = new Bundle();
@@ -109,7 +106,6 @@ public class Contacts extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Pulsante per aggiungere contatti
-        // TODO: Gestire i duplicati
         floatingActionButtonAdd = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonAdd);
         // Controllo se posso accedere ai contatti
         if (checkContactsPermission()) {

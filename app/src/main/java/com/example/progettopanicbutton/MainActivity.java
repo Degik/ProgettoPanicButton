@@ -53,10 +53,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     // ServiceIntentTracker
     private Intent intentServiceTracker;
     // In questa struttura vengono raccolte le informazioni di ogni contatto
-    // TODO: Creare un set per evitare duplicati e scrivere la equals
     public static ArrayList<InfoContact> contactInfoArrayList;
     // Struttura dati per salvare gli id dei contatti preferiti
-    // TODO: Implementare il backup dei preferiti
     public static HashSet<String> favourite_ID;
     //  Backup - Questo deve essere accessibile a tutti
     public static Backup backup;

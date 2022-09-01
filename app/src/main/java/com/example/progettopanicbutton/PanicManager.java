@@ -139,7 +139,6 @@ public class PanicManager {
         @Override
         public void onCallStateChanged(int state, String phoneNumber) {
             super.onCallStateChanged(state, phoneNumber);
-            // TODO: Bugfix
             switch (state) {
                 case TelephonyManager.CALL_STATE_IDLE:
                     //CALL_STATE_IDLE;

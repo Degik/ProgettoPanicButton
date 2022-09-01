@@ -86,7 +86,6 @@ public class ServiceTracker extends Service {
     }
 
     public static Location getMyLocation(){
-        // TODO: Testare il location
         return myLocation;
     }
 
